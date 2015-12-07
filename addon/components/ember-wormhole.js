@@ -27,6 +27,7 @@ export default Component.extend({
     return findElementById(this._dom.document, id);
   }),
   renderInPlace: false,
+  replaceDestination: false,
 
   /*
    * Lifecycle
@@ -85,6 +86,7 @@ export default Component.extend({
 
   _appendToDestination() {
     var destinationElement = this.get('destinationElement');
+    var replaceDestination = this.get('replaceDestination');
     if (!destinationElement) {
       var destinationElementId = this.get('destinationElementId');
       if (destinationElementId) {
@@ -94,15 +96,19 @@ export default Component.extend({
     }
 
     var currentActiveElement = getActiveElement();
-    this._appendRange(destinationElement, this._wormholeHeadNode, this._wormholeTailNode);
+    this._appendRange(destinationElement, this._wormholeHeadNode, this._wormholeTailNode, replaceDestination);
     if (currentActiveElement && getActiveElement() !== currentActiveElement) {
       currentActiveElement.focus();
     }
   },
 
-  _appendRange(destinationElement, firstNode, lastNode) {
+  _appendRange(destinationElement, firstNode, lastNode, replace) {
+    if (replace) {
+      var marker = destinationElement;
+      var destinationElement = marker.parentElement;  
+    } 
     while(firstNode) {
-      destinationElement.insertBefore(firstNode, null);
+      destinationElement.insertBefore(firstNode, replace ? marker : null);
       firstNode = firstNode !== lastNode ? lastNode.parentNode.firstChild : null;
     }
   },
