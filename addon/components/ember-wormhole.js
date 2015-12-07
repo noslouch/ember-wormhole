@@ -103,13 +103,16 @@ export default Component.extend({
   },
 
   _appendRange(destinationElement, firstNode, lastNode, replace) {
+    var marker = destinationElement;
     if (replace) {
-      var marker = destinationElement;
-      var destinationElement = marker.parentElement;  
+      destinationElement = marker.parentElement;
     } 
     while(firstNode) {
       destinationElement.insertBefore(firstNode, replace ? marker : null);
       firstNode = firstNode !== lastNode ? lastNode.parentNode.firstChild : null;
+    }
+    if (replace) {
+      destinationElement.removeChild(marker);
     }
   },
 
